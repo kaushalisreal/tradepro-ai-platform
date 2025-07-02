@@ -66,7 +66,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onDemoMode }) => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
             <Button 
               size="lg" 
-              className="bg-gradient-to-r from-blue-500 to-emerald-500 hover:from-blue-600 hover:to-emerald-600 text-white border-0 px-8 py-6 text-lg font-semibold shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105"
+              className="bg-gradient-to-r from-blue-500 to-emerald-500 hover:from-blue-600 hover:to-emerald-600 text-white border-0 shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105"
             >
               Start Trading Now
             </Button>
@@ -74,7 +74,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onDemoMode }) => {
             <Button 
               size="lg" 
               variant="outline" 
-              className="border-white/20 text-white hover:bg-white/10 px-8 py-6 text-lg backdrop-blur-sm"
+              className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white backdrop-blur-sm transition-all duration-300"
               onClick={onDemoMode}
             >
               Try Demo Mode
@@ -83,7 +83,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onDemoMode }) => {
             <Button 
               size="lg" 
               variant="ghost" 
-              className="text-white/80 hover:text-white hover:bg-white/5 px-8 py-6 text-lg"
+              className="text-white/80 hover:text-white hover:bg-white/5 transition-all duration-300"
             >
               <Play className="w-5 h-5 mr-2" />
               Watch 2-Min Demo
