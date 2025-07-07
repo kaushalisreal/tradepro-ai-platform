@@ -74,11 +74,11 @@ export const PortfolioOverview: React.FC<PortfolioOverviewProps> = ({ isDemoMode
         </div>
 
         <div className="flex space-x-2 mt-6">
-          <Button className="flex-1 bg-gradient-to-r from-blue-500 to-emerald-500 hover:from-blue-600 hover:to-emerald-600">
+          <Button className="flex-1 bg-gradient-to-r from-blue-500 to-emerald-500 hover:from-blue-600 hover:to-emerald-600 text-white">
             <DollarSign className="w-4 h-4 mr-2" />
             Buy
           </Button>
-          <Button variant="outline" className="flex-1 border-white/20 text-white hover:bg-white/10">
+          <Button variant="outline" className="flex-1 border-white/20 text-white hover:bg-white/10 hover:text-white bg-white/5">
             Sell
           </Button>
         </div>

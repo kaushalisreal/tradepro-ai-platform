@@ -25,14 +25,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onDemoMode }) => {
         <div className="max-w-4xl mx-auto">
           {/* Main Headlines */}
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-blue-200 to-emerald-200 bg-clip-text text-transparent leading-tight">
-            AI-Powered Trading
+            Real-Time Asset Signals
             <br />
-            Intelligence for Every Market
+            AI Trading Insights
           </h1>
           
           <p className="text-xl md:text-2xl text-white/70 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Make smarter decisions with real-time analysis across stocks, crypto, forex, and commodities. 
-            Join {userCount.toLocaleString()}+ traders using AI-driven insights.
+            Get real-time asset signals and AI trading insights across crypto, stocks, forex, and commodities. 
+            Join {userCount.toLocaleString()}+ traders making smarter decisions.
           </p>
 
           {/* Social Proof Stats */}

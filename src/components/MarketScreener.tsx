@@ -117,7 +117,7 @@ export const MarketScreener = () => {
       <Card className="bg-white/5 backdrop-blur-md border-white/10 p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-semibold text-white">Market Screener</h3>
-          <Button variant="outline" className="border-white/20 text-white hover:bg-white/10">
+          <Button variant="outline" className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white">
             <Search className="w-4 h-4 mr-2" />
             Advanced Filter
           </Button>
@@ -174,7 +174,7 @@ export const MarketScreener = () => {
                         {stock.changePercent >= 0 ? '+' : ''}{stock.changePercent.toFixed(2)}%
                       </div>
                     </div>
-                    <Button variant="ghost" size="sm" className="text-white/70 hover:text-white">
+                    <Button variant="ghost" size="sm" className="text-white/70 hover:text-white hover:bg-white/10">
                       <Star className="w-4 h-4" />
                     </Button>
                   </div>
@@ -212,7 +212,7 @@ export const MarketScreener = () => {
                         {crypto.changePercent >= 0 ? '+' : ''}{crypto.changePercent.toFixed(2)}%
                       </div>
                     </div>
-                    <Button variant="ghost" size="sm" className="text-white/70 hover:text-white">
+                    <Button variant="ghost" size="sm" className="text-white/70 hover:text-white hover:bg-white/10">
                       <Star className="w-4 h-4" />
                     </Button>
                   </div>

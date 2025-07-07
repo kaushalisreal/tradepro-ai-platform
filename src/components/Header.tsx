@@ -1,10 +1,14 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Bell, Settings, User, Menu, X, TrendingUp, Zap } from 'lucide-react';
+import { Bell, Settings, User, Menu, X, Zap } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black/10 backdrop-blur-xl border-b border-white/5">
@@ -14,25 +18,20 @@ export const Header = () => {
       <div className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
           {/* Modern Logo Design */}
-          <div className="flex items-center space-x-3">
+          <Link to="/" className="flex items-center space-x-3">
             <div className="relative">
               {/* Logo container with enhanced glass effect */}
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-400/20 to-emerald-400/20 backdrop-blur-sm rounded-xl border border-white/10 flex items-center justify-center shadow-lg">
-                <div className="w-5 h-5 bg-gradient-to-br from-blue-400 to-emerald-400 rounded-md shadow-inner flex items-center justify-center">
-                  <TrendingUp className="w-3 h-3 text-white" />
-                </div>
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-400/10 to-emerald-400/10 backdrop-blur-sm rounded-xl border border-white/10 flex items-center justify-center shadow-lg">
+                <img src="/chronobi-logo.svg" alt="Chronobi" className="w-7 h-7" />
               </div>
               {/* Animated glow effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-blue-400/30 to-emerald-400/30 rounded-xl blur-sm animate-pulse opacity-50"></div>
             </div>
             
             <div className="flex items-center space-x-2">
-              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-300 via-white to-emerald-300 bg-clip-text text-transparent">
-                TradePro
+              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-300 via-white to-emerald-300 bg-clip-text text-transparent tracking-tight">
+                Chronobi
               </h1>
-              <span className="text-xs font-medium px-2 py-1 bg-gradient-to-r from-blue-500/20 to-emerald-500/20 backdrop-blur-sm rounded-full border border-white/10 text-blue-200">
-                AI
-              </span>
             </div>
             
             {/* Live status indicator */}
@@ -40,27 +39,37 @@ export const Header = () => {
               <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-lg shadow-emerald-400/50"></div>
               <span className="text-xs text-emerald-300 font-medium">Live</span>
             </div>
-          </div>
+          </Link>
 
           {/* Modern Navigation */}
           <nav className="hidden lg:flex items-center space-x-1">
             {[
-              { name: 'Dashboard', href: '#dashboard' },
-              { name: 'Markets', href: '#markets' },
-              { name: 'Analysis', href: '#analysis' },
-              { name: 'Portfolio', href: '#portfolio' }
+              { name: 'Home', href: '/' },
+              { name: 'Dashboard', href: '/dashboard' },
+              { name: 'Market Screener', href: '/market-screener' },
+              { name: 'Signal Center', href: '/signal-center' },
+              { name: 'AI Insights', href: '/ai-insights' },
+              { name: 'Notifications', href: '/notifications' }
             ].map((item) => (
-              <a
+              <Link
                 key={item.name}
-                href={item.href}
-                className="relative px-4 py-2 text-sm font-medium text-white/80 hover:text-white transition-all duration-300 group"
+                to={item.href}
+                className={`relative px-4 py-2 text-sm font-medium transition-all duration-300 group ${
+                  isActive(item.href) 
+                    ? 'text-white bg-white/10 backdrop-blur-sm rounded-lg border border-white/10' 
+                    : 'text-white/80 hover:text-white'
+                }`}
               >
                 <span className="relative z-10">{item.name}</span>
                 {/* Hover background effect */}
-                <div className="absolute inset-0 bg-white/5 backdrop-blur-sm rounded-lg border border-white/5 opacity-0 group-hover:opacity-100 transition-all duration-300 scale-95 group-hover:scale-100"></div>
+                {!isActive(item.href) && (
+                  <div className="absolute inset-0 bg-white/5 backdrop-blur-sm rounded-lg border border-white/5 opacity-0 group-hover:opacity-100 transition-all duration-300 scale-95 group-hover:scale-100"></div>
+                )}
                 {/* Active indicator line */}
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-emerald-400 group-hover:w-3/4 transition-all duration-300"></div>
-              </a>
+                <div className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 h-0.5 bg-gradient-to-r from-blue-400 to-emerald-400 transition-all duration-300 ${
+                  isActive(item.href) ? 'w-3/4' : 'w-0 group-hover:w-3/4'
+                }`}></div>
+              </Link>
             ))}
           </nav>
 
@@ -96,14 +105,16 @@ export const Header = () => {
             </div>
 
             {/* Modern Sign In Button */}
-            <Button className="relative bg-gradient-to-r from-blue-500 to-emerald-500 hover:from-blue-600 hover:to-emerald-600 text-white border-0 px-6 py-2 rounded-xl font-medium shadow-lg transition-all duration-300 hover:shadow-blue-500/25 hover:scale-105">
-              <span className="relative z-10 flex items-center space-x-2">
-                <Zap className="w-4 h-4" />
-                <span>Sign In</span>
-              </span>
-              {/* Button glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-400/50 to-emerald-400/50 rounded-xl blur opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-            </Button>
+            <Link to="/login">
+              <Button className="relative bg-gradient-to-r from-blue-500 to-emerald-500 hover:from-blue-600 hover:to-emerald-600 text-white border-0 px-6 py-2 rounded-xl font-medium shadow-lg transition-all duration-300 hover:shadow-blue-500/25 hover:scale-105">
+                <span className="relative z-10 flex items-center space-x-2">
+                  <Zap className="w-4 h-4" />
+                  <span>Sign In</span>
+                </span>
+                {/* Button glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400/50 to-emerald-400/50 rounded-xl blur opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+              </Button>
+            </Link>
             
             {/* Modern Mobile Menu Toggle */}
             <Button 
@@ -127,24 +138,33 @@ export const Header = () => {
           <div className="mt-4 pb-4 border-t border-white/10">
             <nav className="flex flex-col space-y-2 mt-4">
               {[
-                { name: 'Dashboard', href: '#dashboard' },
-                { name: 'Markets', href: '#markets' },
-                { name: 'Analysis', href: '#analysis' },
-                { name: 'Portfolio', href: '#portfolio' }
+                { name: 'Home', href: '/' },
+                { name: 'Dashboard', href: '/dashboard' },
+                { name: 'Market Screener', href: '/market-screener' },
+                { name: 'Signal Center', href: '/signal-center' },
+                { name: 'AI Insights', href: '/ai-insights' },
+                { name: 'Notifications', href: '/notifications' }
               ].map((item, index) => (
-                <a
+                <Link
                   key={item.name}
-                  href={item.href}
-                  className="relative px-4 py-3 text-white/80 hover:text-white transition-all duration-300 rounded-xl hover:bg-white/5 backdrop-blur-sm border border-transparent hover:border-white/10 group"
+                  to={item.href}
+                  className={`relative px-4 py-3 transition-all duration-300 rounded-xl backdrop-blur-sm border group ${
+                    isActive(item.href) 
+                      ? 'text-white bg-white/10 border-white/10' 
+                      : 'text-white/80 hover:text-white hover:bg-white/5 border-transparent hover:border-white/10'
+                  }`}
                   style={{ animationDelay: `${index * 50}ms` }}
+                  onClick={() => setIsMenuOpen(false)}
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-medium">{item.name}</span>
-                    <div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-emerald-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className={`w-2 h-2 bg-gradient-to-r from-blue-400 to-emerald-400 rounded-full transition-opacity duration-300 ${
+                      isActive(item.href) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                    }`}></div>
                   </div>
-                </a>
+                </Link>
               ))}
-            </nav>
+          </nav>
             
             {/* Mobile action buttons */}
             <div className="flex items-center justify-center space-x-3 mt-6 pt-4 border-t border-white/5">
