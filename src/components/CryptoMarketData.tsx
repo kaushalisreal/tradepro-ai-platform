@@ -24,6 +24,8 @@ export const CryptoMarketData = () => {
   const [loading, setLoading] = useState(true);
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
   const [liveUpdates, setLiveUpdates] = useState<Map<string, BinanceWebSocketTicker>>(new Map());
+  const [wsConnected, setWsConnected] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState<number>(0);
 
   // Top crypto symbols to track
   const topCryptoSymbols = [
@@ -45,10 +47,20 @@ export const CryptoMarketData = () => {
   };
 
   useEffect(() => {
+    console.log('CryptoMarketData component mounted - starting data fetch');
+    
+    // Test WebSocket connection first
+    binanceApi.testWebSocketConnection();
+    
     fetchInitialData();
-    setupWebSocketConnection();
+    
+    // Setup WebSocket with delay to ensure REST API call completes first
+    setTimeout(() => {
+      setupWebSocketConnection();
+    }, 1000);
 
     return () => {
+      console.log('CryptoMarketData component unmounting - cleaning up');
       binanceApi.disconnect();
     };
   }, []);
@@ -84,14 +96,23 @@ export const CryptoMarketData = () => {
   };
 
   const setupWebSocketConnection = () => {
+    console.log('Setting up WebSocket connection for symbols:', topCryptoSymbols);
+    
     const streams = topCryptoSymbols.map(symbol => `${symbol.toLowerCase()}@ticker`);
+    console.log('WebSocket streams:', streams);
     
     binanceApi.connectWebSocket(streams);
 
     // Subscribe to ticker updates
     topCryptoSymbols.forEach(symbol => {
       const stream = `${symbol.toLowerCase()}@ticker`;
+      console.log(`Subscribing to stream: ${stream}`);
+      
       binanceApi.subscribe(stream, (data: BinanceWebSocketTicker) => {
+        console.log(`Received ticker update for ${symbol}:`, data);
+        setWsConnected(true);
+        setLastUpdate(Date.now());
+        
         setLiveUpdates(prev => {
           const newMap = new Map(prev);
           newMap.set(symbol, data);
@@ -102,6 +123,7 @@ export const CryptoMarketData = () => {
         setCryptoData(prevData => 
           prevData.map(crypto => {
             if (crypto.symbol === symbol.replace('USDT', '')) {
+              console.log(`Updating ${crypto.symbol} price: ${data.c}`);
               return {
                 ...crypto,
                 price: parseFloat(data.c),
@@ -218,10 +240,27 @@ export const CryptoMarketData = () => {
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-semibold text-white">Live Crypto Prices</h3>
           <div className="flex items-center space-x-2">
-            <div className="flex items-center space-x-1 text-emerald-400">
-              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-              <span className="text-sm">Live</span>
+            <div className={`flex items-center space-x-1 ${wsConnected ? 'text-emerald-400' : 'text-red-400'}`}>
+              <div className={`w-2 h-2 rounded-full ${wsConnected ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'}`}></div>
+              <span className="text-sm">{wsConnected ? 'Live' : 'Disconnected'}</span>
             </div>
+            {lastUpdate > 0 && (
+              <span className="text-xs text-white/50">
+                Last update: {new Date(lastUpdate).toLocaleTimeString()}
+              </span>
+            )}
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => {
+                console.log('Manual reconnect triggered');
+                binanceApi.disconnect();
+                setTimeout(() => setupWebSocketConnection(), 1000);
+              }}
+              className="border-white/20 bg-white/5 text-white hover:bg-white/10"
+            >
+              Reconnect
+            </Button>
             <Button variant="outline" className="border-white/20 bg-white/5 text-white hover:bg-white/10">
               <Search className="w-4 h-4 mr-2" />
               Search

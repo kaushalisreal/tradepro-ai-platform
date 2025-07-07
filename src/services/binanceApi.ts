@@ -3,6 +3,9 @@ import axios from 'axios';
 const BINANCE_API_BASE = 'https://api.binance.com/api/v3';
 const BINANCE_WS_BASE = 'wss://stream.binance.com:9443/ws';
 
+// Add CORS proxy for testing (remove in production)
+const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
+
 export interface BinanceSymbol {
   symbol: string;
   baseAsset: string;
@@ -138,10 +141,13 @@ class BinanceApiService {
       const url = symbol 
         ? `${BINANCE_API_BASE}/ticker/24hr?symbol=${symbol}`
         : `${BINANCE_API_BASE}/ticker/24hr`;
+      
+      console.log('🚀 Fetching 24hr ticker from:', url);
       const response = await axios.get(url);
+      console.log('✅ 24hr ticker response:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Error fetching 24hr ticker:', error);
+      console.error('❌ Error fetching 24hr ticker:', error);
       throw error;
     }
   }
@@ -227,47 +233,68 @@ class BinanceApiService {
       this.ws.close();
     }
 
-    const streamParam = streams.join('/');
-    const wsUrl = `${BINANCE_WS_BASE}/${streamParam}`;
+    // Use combined stream for multiple streams
+    let wsUrl: string;
+    if (streams.length === 1) {
+      wsUrl = `${BINANCE_WS_BASE}/${streams[0]}`;
+    } else {
+      // For multiple streams, use the combined stream endpoint
+      const streamNames = streams.join('/');
+      wsUrl = `wss://stream.binance.com:9443/stream?streams=${streamNames}`;
+    }
+    
+    console.log('🔌 Connecting to WebSocket:', wsUrl);
+    console.log('📡 Streams:', streams);
     
     this.ws = new WebSocket(wsUrl);
 
     this.ws.onopen = () => {
-      console.log('WebSocket connected');
+      console.log('✅ WebSocket connected successfully');
     };
 
     this.ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        this.handleWebSocketMessage(data);
+        console.log('📨 WebSocket message received:', data);
+        this.handleWebSocketMessage(data, streams);
       } catch (error) {
-        console.error('Error parsing WebSocket message:', error);
+        console.error('❌ Error parsing WebSocket message:', error);
       }
     };
 
-    this.ws.onclose = () => {
-      console.log('WebSocket disconnected');
+    this.ws.onclose = (event) => {
+      console.log('🔌 WebSocket disconnected:', event.code, event.reason);
       // Attempt to reconnect after 3 seconds
       setTimeout(() => {
         if (streams.length > 0) {
+          console.log('🔄 Attempting to reconnect...');
           this.connectWebSocket(streams);
         }
       }, 3000);
     };
 
     this.ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
+      console.error('❌ WebSocket error:', error);
     };
   }
 
-  private handleWebSocketMessage(data: any): void {
-    if (data.stream) {
+  private handleWebSocketMessage(data: any, streams: string[]): void {
+    // Handle combined stream format
+    if (data.stream && data.data) {
       const stream = data.stream;
       const eventData = data.data;
       
       const subscribers = this.subscribers.get(stream);
       if (subscribers) {
         subscribers.forEach(callback => callback(eventData));
+      }
+    }
+    // Handle single stream format
+    else if (streams.length === 1) {
+      const stream = streams[0];
+      const subscribers = this.subscribers.get(stream);
+      if (subscribers) {
+        subscribers.forEach(callback => callback(data));
       }
     }
   }
@@ -298,6 +325,31 @@ class BinanceApiService {
       this.ws = null;
     }
     this.subscribers.clear();
+  }
+
+  // Test WebSocket connection
+  testWebSocketConnection(): void {
+    console.log('Testing WebSocket connection...');
+    const testStream = 'btcusdt@ticker';
+    
+    const testWs = new WebSocket(`${BINANCE_WS_BASE}/${testStream}`);
+    
+    testWs.onopen = () => {
+      console.log('✅ Test WebSocket connected successfully!');
+      testWs.close();
+    };
+    
+    testWs.onmessage = (event) => {
+      console.log('📨 Test WebSocket message received:', JSON.parse(event.data));
+    };
+    
+    testWs.onerror = (error) => {
+      console.error('❌ Test WebSocket error:', error);
+    };
+    
+    testWs.onclose = () => {
+      console.log('🔌 Test WebSocket closed');
+    };
   }
 
   // Utility methods
