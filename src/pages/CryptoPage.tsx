@@ -3,7 +3,7 @@ import { Header } from '@/components/Header';
 import { CryptoTradingDashboard } from '@/components/CryptoTradingDashboard';
 import { VortexBackground } from '@/components/VortexBackground';
 
-const Dashboard = () => {
+const CryptoPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white">
       {/* Vortex animated background */}
@@ -19,4 +19,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default CryptoPage;

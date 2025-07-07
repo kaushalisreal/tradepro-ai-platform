@@ -4,10 +4,11 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TrendingUp, TrendingDown, Star, Search } from 'lucide-react';
+import { TrendingUp, TrendingDown, Star, Search, Clock, AlertCircle } from 'lucide-react';
+import { CryptoMarketData } from './CryptoMarketData';
 
 export const MarketScreener = () => {
-  const [selectedCategory, setSelectedCategory] = useState('stocks');
+  const [selectedCategory, setSelectedCategory] = useState('crypto');
 
   const stockData = [
     { symbol: 'AAPL', name: 'Apple Inc.', price: 187.23, change: 3.45, changePercent: 1.88, volume: '45.2M', marketCap: '2.89T' },
@@ -124,13 +125,7 @@ export const MarketScreener = () => {
         </div>
 
         <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-white/5 backdrop-blur-sm border border-white/10 mb-6">
-            <TabsTrigger 
-              value="stocks"
-              className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10"
-            >
-              Stocks
-            </TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4 bg-white/5 backdrop-blur-sm border border-white/10 mb-6">
             <TabsTrigger 
               value="crypto"
               className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10"
@@ -138,92 +133,83 @@ export const MarketScreener = () => {
               Crypto
             </TabsTrigger>
             <TabsTrigger 
+              value="stocks"
+              className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10"
+            >
+              Stocks
+            </TabsTrigger>
+            <TabsTrigger 
               value="forex"
               className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10"
             >
               Forex
             </TabsTrigger>
+            <TabsTrigger 
+              value="commodities"
+              className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10"
+            >
+              Commodities
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="stocks">
-            <div className="space-y-3">
-              {stockData.map((stock) => (
-                <div key={stock.symbol} className="bg-white/5 rounded-lg p-4 flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div>
-                      <div className="font-medium text-white">{stock.symbol}</div>
-                      <div className="text-sm text-white/70">{stock.name}</div>
-                    </div>
-                    <Badge variant="outline" className="border-white/20 text-white/70">
-                      {stock.marketCap}
-                    </Badge>
-                  </div>
-                  
-                  <div className="flex items-center space-x-6">
-                    <div className="text-right">
-                      <div className="font-medium text-white">${stock.price}</div>
-                      <div className="text-sm text-white/70">{stock.volume}</div>
-                    </div>
-                    <div className={`text-right ${
-                      stock.change >= 0 ? 'text-emerald-400' : 'text-red-400'
-                    }`}>
-                      <div className="font-medium">
-                        {stock.change >= 0 ? '+' : ''}${stock.change.toFixed(2)}
-                      </div>
-                      <div className="text-sm">
-                        {stock.changePercent >= 0 ? '+' : ''}{stock.changePercent.toFixed(2)}%
-                      </div>
-                    </div>
-                    <Button variant="ghost" size="sm" className="text-white/70 hover:text-white hover:bg-white/10">
-                      <Star className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <TabsContent value="crypto">
+            <CryptoMarketData />
           </TabsContent>
 
-          <TabsContent value="crypto">
-            <div className="space-y-3">
-              {cryptoData.map((crypto) => (
-                <div key={crypto.symbol} className="bg-white/5 rounded-lg p-4 flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div>
-                      <div className="font-medium text-white">{crypto.symbol}</div>
-                      <div className="text-sm text-white/70">{crypto.name}</div>
-                    </div>
-                    <Badge variant="outline" className="border-white/20 text-white/70">
-                      {crypto.marketCap}
-                    </Badge>
-                  </div>
-                  
-                  <div className="flex items-center space-x-6">
-                    <div className="text-right">
-                      <div className="font-medium text-white">${crypto.price.toLocaleString()}</div>
-                      <div className="text-sm text-white/70">{crypto.volume}</div>
-                    </div>
-                    <div className={`text-right ${
-                      crypto.change >= 0 ? 'text-emerald-400' : 'text-red-400'
-                    }`}>
-                      <div className="font-medium">
-                        {crypto.change >= 0 ? '+' : ''}${crypto.change.toFixed(2)}
-                      </div>
-                      <div className="text-sm">
-                        {crypto.changePercent >= 0 ? '+' : ''}{crypto.changePercent.toFixed(2)}%
-                      </div>
-                    </div>
-                    <Button variant="ghost" size="sm" className="text-white/70 hover:text-white hover:bg-white/10">
-                      <Star className="w-4 h-4" />
-                    </Button>
-                  </div>
+          <TabsContent value="stocks">
+            <div className="text-center py-12">
+              <div className="bg-white/5 rounded-lg p-8 max-w-md mx-auto">
+                <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <AlertCircle className="w-8 h-8 text-blue-400" />
                 </div>
-              ))}
+                <h3 className="text-xl font-semibold text-white mb-2">Stocks Coming Soon</h3>
+                <p className="text-white/70 mb-4">
+                  We're working on integrating comprehensive stock market data. 
+                  Stay tuned for real-time stock prices, fundamentals, and advanced analytics.
+                </p>
+                <div className="flex items-center justify-center space-x-2 text-white/50">
+                  <Clock className="w-4 h-4" />
+                  <span className="text-sm">Expected: Q2 2025</span>
+                </div>
+              </div>
             </div>
           </TabsContent>
 
           <TabsContent value="forex">
-            <div className="text-center py-8 text-white/70">
-              <p>Forex pairs coming soon...</p>
+            <div className="text-center py-12">
+              <div className="bg-white/5 rounded-lg p-8 max-w-md mx-auto">
+                <div className="w-16 h-16 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <AlertCircle className="w-8 h-8 text-yellow-400" />
+                </div>
+                <h3 className="text-xl font-semibold text-white mb-2">Forex Coming Soon</h3>
+                <p className="text-white/70 mb-4">
+                  Foreign exchange pairs and currency trading signals are in development. 
+                  Get ready for major, minor, and exotic currency pairs.
+                </p>
+                <div className="flex items-center justify-center space-x-2 text-white/50">
+                  <Clock className="w-4 h-4" />
+                  <span className="text-sm">Expected: Q2 2025</span>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="commodities">
+            <div className="text-center py-12">
+              <div className="bg-white/5 rounded-lg p-8 max-w-md mx-auto">
+                <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <AlertCircle className="w-8 h-8 text-orange-400" />
+                </div>
+                <h3 className="text-xl font-semibold text-white mb-2">Commodities Coming Soon</h3>
+                <p className="text-white/70 mb-4">
+                  Precious metals, energy, and agricultural commodities data is being integrated. 
+                  Track gold, oil, wheat, and more with advanced analytics.
+                </p>
+                <div className="flex items-center justify-center space-x-2 text-white/50">
+                  <Clock className="w-4 h-4" />
+                  <span className="text-sm">Expected: Q3 2025</span>
+                </div>
+              </div>
             </div>
           </TabsContent>
         </Tabs>
